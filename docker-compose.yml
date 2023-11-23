@@ -2,6 +2,7 @@ version: "3"
 services:
   ports:
     image: ports:0.0.1
+    container_name: ports
     mem_limit: 200m
     ports:
       - "8080:8080"
