@@ -34,14 +34,9 @@ func NewREST(service app.Service) *rest {
 				method: "POST",
 				regex:  regexp.MustCompile(`^/ports$`),
 			},
-			{
-				method: "PUT",
-				regex:  regexp.MustCompile(`^/ports/[A-Za-z\d]+(\?.*)?$`),
-			},
 		},
 	}
 	r.routes[0].handler = r.Create
-	r.routes[1].handler = r.Update
 	return r
 }
 
@@ -89,11 +84,7 @@ func (r *rest) Create(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-}
-
-func (r *rest) Update(w http.ResponseWriter, req *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func httpStatusFromDomainError(err error) int {
