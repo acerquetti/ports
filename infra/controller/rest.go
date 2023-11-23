@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/acerquetti/ports/app"
 	"github.com/acerquetti/ports/domain"
@@ -77,14 +78,28 @@ func (r *rest) Create(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if err := r.service.Create(portRaw); err != nil {
-		log.Print(err)
-		w.WriteHeader(httpStatusFromDomainError(err))
-		w.Write([]byte(err.Error()))
-		return
-	}
+	svcResult := make(chan error)
+	go func() {
+		svcResult <- r.service.Create(portRaw)
+	}()
 
-	w.WriteHeader(http.StatusNoContent)
+	select {
+	// Capture result from app service called
+	case err := <-svcResult:
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(httpStatusFromDomainError(err))
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	// Timeout in case app service got stuck
+	case <-time.After(10 * time.Second):
+		w.WriteHeader(http.StatusInternalServerError)
+	case <-req.Context().Done():
+		log.Print(req.Context().Err())
+	}
 }
 
 func httpStatusFromDomainError(err error) int {
