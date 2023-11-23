@@ -19,4 +19,4 @@ lint:
 
 docker: lint test
 	$(DOCKER_BUILD_GO_ENV) $(GOBUILD) -o $(BINARY_NAME) $(MAIN_PATH)
-	docker build -t $(BINARY_NAME) .
+	docker build -t $(BINARY_NAME):0.0.1 .

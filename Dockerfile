@@ -5,11 +5,9 @@ WORKDIR /app
 COPY ports .
 COPY ports.json .
 
-# Create nonroot user w/o password
+# Use a non-root user for running the app
 RUN adduser -D nonroot
-# ... change files ownership
 RUN chown -R nonroot:nonroot /app
-# ... and use it
 USER nonroot
 
 EXPOSE 8080
