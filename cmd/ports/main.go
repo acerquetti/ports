@@ -44,6 +44,7 @@ func main() {
 
 	go handleSignals(server)
 
+	log.Print("listening on ", serverAddr)
 	log.Print(server.ListenAndServe())
 }
 
