@@ -3,7 +3,7 @@
 ## How to run
 
 ```shell
-$ make docker        # Build Docker container
+$ make docker        # Build Docker container (lint, test, build, build container)
 $ docker compose up  # Run service
 ```
 
