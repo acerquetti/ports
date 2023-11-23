@@ -128,7 +128,7 @@ type Port struct {
 	Name        Name
 	Coordinates Coordinates
 	Location    Location
-	Alias       Aliases
+	Aliases     Aliases
 	Regions     Regions
 	Timezone    Timezone
 	Unlocs      []ID
