@@ -12,6 +12,10 @@ var (
 	timezoneRegex = regexp.MustCompile("^[A-Za-z_-]+/[A-Za-z_-]+$")
 )
 
+type Repository interface {
+	Save(Port) error
+}
+
 type ID string
 
 func NewID(id string) (*ID, error) {
@@ -213,8 +217,4 @@ func NewPortFromRaw(p PortRaw) (port *Port, err error) {
 		Unlocs:      unlocs,
 		Code:        *code,
 	}, nil
-}
-
-type Repository interface {
-	Save(Port) error
 }
