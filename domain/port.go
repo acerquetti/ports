@@ -123,6 +123,20 @@ func NewCode(code string) (*Code, error) {
 	return &newCode, nil
 }
 
+type PortRaw struct {
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Coordinates []float64 `json:"coordinates"`
+	City        string    `json:"city"`
+	Province    string    `json:"province"`
+	Country     string    `json:"country"`
+	Aliases     []string  `json:"alias"`
+	Regions     []string  `json:"regions"`
+	Timezone    string    `json:"timezone"`
+	Unlocs      []string  `json:"unlocs"`
+	Code        string    `json:"code"`
+}
+
 type Port struct {
 	ID          ID
 	Name        Name
@@ -133,6 +147,72 @@ type Port struct {
 	Timezone    Timezone
 	Unlocs      []ID
 	Code        Code
+}
+
+func NewPortFromRaw(p PortRaw) (port *Port, err error) {
+	var id *ID
+	var name *Name
+	var coordinates *Coordinates
+	var location *Location
+	var aliases *Aliases
+	var regions *Regions
+	var timezone *Timezone
+	var code *Code
+
+	unlocs := make([]ID, 0)
+
+	if id, err = NewID(p.ID); err != nil {
+		return
+	}
+
+	if name, err = NewName(p.Name); err != nil {
+		return
+	}
+
+	if coordinates, err = NewCoordinates(p.Coordinates); err != nil {
+		return
+	}
+
+	if location, err = NewLocation(p.City, p.Province, p.Country); err != nil {
+		return
+	}
+
+	if aliases, err = NewAliases(p.Aliases); err != nil {
+		return
+	}
+
+	if regions, err = NewRegions(p.Regions); err != nil {
+		return
+	}
+
+	if timezone, err = NewTimezone(p.Timezone); err != nil {
+		return
+	}
+
+	for _, rawUnloc := range p.Unlocs {
+		var unloc *ID
+		if unloc, err = NewID(rawUnloc); err != nil {
+			return
+		}
+
+		unlocs = append(unlocs, *unloc)
+	}
+
+	if code, err = NewCode(p.Code); err != nil {
+		return
+	}
+
+	return &Port{
+		ID:          *id,
+		Name:        *name,
+		Coordinates: *coordinates,
+		Location:    *location,
+		Aliases:     *aliases,
+		Regions:     *regions,
+		Timezone:    *timezone,
+		Unlocs:      unlocs,
+		Code:        *code,
+	}, nil
 }
 
 type Repository interface {
